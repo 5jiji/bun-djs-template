@@ -2,6 +2,10 @@
   "name": "bun-discordjs-template",
   "module": "src/main.ts",
   "type": "module",
+  "scripts": {
+    "run": "bun .",
+    "deploy": "bun src/deploy.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

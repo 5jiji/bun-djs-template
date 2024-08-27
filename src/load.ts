@@ -45,13 +45,15 @@ async function loadEvents(client: Client) {
   }
 }
 
-async function loadCommands(client: Client) {
-  client.commands = new Collection();
+export async function loadCommands() {
+  const collection = new Collection<string, Command>();
 
   let commands = await getScripts<Command>("commands");
   for (const command of commands) {
-    client.commands.set(command.data.name, command);
-  } 
+    collection.set(command.data.name, command);
+  }
+
+  return collection;
 }
 
 export async function loadClient() {
@@ -82,10 +84,12 @@ export async function loadClient() {
 
   client.config = config;
 
-  Promise.all([
-    loadEvents(client),
-    loadCommands(client)
+  const [commands] = await Promise.all([
+    loadCommands(),
+    loadEvents(client)
   ]);
+
+  client.commands = commands;
 
   client.fullUsername = (user) => {
     return user.discriminator != "0" ? `${user.username}#${user.discriminator}` : user.username

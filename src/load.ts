@@ -1,5 +1,5 @@
 import { readdir, stat } from "node:fs/promises";
-import { Client, Collection } from "discord.js";
+import { Client, Collection, GatewayIntentBits } from "discord.js";
 import config from "../config.json";
 import type { Events } from "./types/events";
 import type { Command } from "./types/commands";
@@ -37,7 +37,7 @@ async function getScripts<T>(baseFolder: string, subdirs = Infinity): Promise<Se
 }
 
 async function loadEvents(client: Client) {
-  const events = await getScripts<Events>("")
+  const events = await getScripts<Events>("events")
 
   for (const event of events) {
     if (event.once) client.once(event.name, event.execute.bind(event));
@@ -92,7 +92,7 @@ export async function loadClient() {
   client.commands = commands;
 
   client.fullUsername = (user) => {
-    return user.discriminator != "0" ? `${user.username}#${user.discriminator}` : user.username
+    return user.discriminator != "0" ? `${user.username}#${user.discriminator}` : user.username;
   }
 
   return client;
